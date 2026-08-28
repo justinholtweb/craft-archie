@@ -1,0 +1,72 @@
+archie: 1
+name: Team
+description: A staff directory — people with a photo, a role, a biography and contact links.
+
+vars:
+  handle: team
+  name: Team
+
+fields:
+  - handle: personRole
+    name: Role
+    type: plainText
+    searchable: true
+
+  - handle: personBio
+    name: Biography
+    type: plainText
+    settings:
+      multiline: true
+      initialRows: 8
+
+  - handle: personPhoto
+    name: Photo
+    type: assets
+    settings:
+      sources: '*'
+      maxRelations: 1
+      viewMode: large
+      allowedKinds: [image]
+
+  - handle: personEmail
+    name: Email
+    type: email
+
+  - handle: personLinks
+    name: Links
+    type: table
+    instructions: Profiles elsewhere — one row per link.
+    settings:
+      columns:
+        col1: { heading: Label, handle: label, type: singleline }
+        col2: { heading: URL, handle: url, type: url }
+      addRowLabel: Add a link
+
+entryTypes:
+  - handle: person
+    name: Person
+    icon: user
+    color: teal
+    fieldLayout:
+      - name: Content
+        fields:
+          - handle: personRole
+            required: true
+          - personBio
+      - name: Details
+        fields:
+          - personPhoto
+          - personEmail
+          - personLinks
+
+sections:
+  - handle: '{{ handle }}'
+    name: '{{ name }}'
+    type: structure
+    maxLevels: 1
+    defaultPlacement: end
+    entryTypes: [person]
+    siteSettings:
+      '*':
+        uriFormat: '{{ handle }}/{slug}'
+        template: '{{ handle }}/_entry'

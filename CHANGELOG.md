@@ -1,0 +1,27 @@
+# Release Notes for Archie
+
+## 5.0.0 - 2026-08-28
+
+Initial release. A Craft 5 replacement for Architect.
+
+### Added
+
+- Blueprints in YAML or JSON describing sites, site groups, filesystems, image transforms, fields,
+  entry types, sections, volumes, category groups, tag groups, global sets, user groups and routes.
+- `plan` — a full diff of what applying a blueprint would do, down to individual attributes and
+  field layout elements, before anything is written. Applies are idempotent: running a blueprint
+  twice does nothing the second time.
+- Rollback. Every apply records what each component looked like beforehand, and can be undone from
+  the CP or the console, with destructive steps called out first.
+- A linter covering unknown and ambiguous field types, reserved and duplicate handles, layouts
+  naming fields that do not exist, sections pointing at missing entry types, settings a field type
+  does not have, credentials written in plain text, and environments where `allowAdminChanges` is
+  off.
+- Reading of Architect's Craft 4 blueprints, including rewriting Matrix block types into Craft 5
+  entry types, and `archie/blueprint/convert` to write the result back out.
+- Export: read the live content model out as a blueprint, pulling in everything the selection needs
+  to be applicable on its own.
+- Seven bundled recipes — blog, page builder, team, FAQ, events, SEO fields and media volume.
+- Console commands under `archie/blueprint`, `archie/recipes` and `archie/history`, with exit codes
+  suitable for CI.
+- A `RegisterComponentHandlersEvent` so a plugin can teach Archie about a component type of its own.

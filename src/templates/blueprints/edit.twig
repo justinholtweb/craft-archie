@@ -1,0 +1,38 @@
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{% set title = name ?? "New blueprint"|t('archie') %}
+{% set selectedSubnavItem = 'blueprints' %}
+{% set crumbs = [
+    { label: "Blueprints"|t('archie'), url: url('archie/blueprints') }
+] %}
+
+{% block content %}
+    <form method="post" accept-charset="UTF-8">
+        {{ csrfInput() }}
+        {{ actionInput('archie/blueprints/save') }}
+        {% if name %}{{ hiddenInput('originalName', name) }}{% endif %}
+
+        {{ forms.textField({
+            label: "Filename"|t('archie'),
+            instructions: "Saved in {directory}. Must end in .yaml, .yml or .json."|t('archie', { directory: directory }),
+            name: 'name',
+            value: name ?? '',
+            required: true,
+            placeholder: 'blog.yaml'
+        }) }}
+
+        {{ forms.textareaField({
+            label: "Blueprint"|t('archie'),
+            name: 'contents',
+            value: contents,
+            rows: 28,
+            class: 'code'
+        }) }}
+
+        <button type="submit" class="btn submit">{{ "Save"|t('archie') }}</button>
+        {% if name %}
+            <a class="btn" href="{{ url('archie/blueprints/plan', { kind: 'file', source: name }) }}">{{ "Plan"|t('archie') }}</a>
+        {% endif %}
+    </form>
+{% endblock %}

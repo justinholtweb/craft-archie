@@ -1,0 +1,35 @@
+archie: 1
+name: SEO fields
+description: >-
+  A minimal SEO tab you can add to any entry type: title override, meta description, a
+  social share image and a no-index switch. No plugin required.
+
+fields:
+  - handle: seoTitle
+    name: SEO title
+    type: plainText
+    instructions: Overrides the entry title in search results. Leave empty to use the title.
+    settings:
+      charLimit: 60
+
+  - handle: seoDescription
+    name: Meta description
+    type: plainText
+    instructions: Around 155 characters. Written for a person, not a crawler.
+    settings:
+      multiline: true
+      initialRows: 3
+      charLimit: 160
+
+  - handle: seoImage
+    name: Share image
+    type: assets
+    instructions: Shown when the page is shared. 1200×630 works everywhere.
+    settings:
+      sources: '*'
+      maxRelations: 1
+      allowedKinds: [image]
+
+  - handle: seoNoIndex
+    name: Hide from search engines
+    type: lightswitch

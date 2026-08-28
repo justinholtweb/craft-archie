@@ -1,0 +1,165 @@
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{% set title = "Plan"|t('archie') %}
+{% set selectedSubnavItem = 'blueprints' %}
+{% set crumbs = [
+    { label: "Blueprints"|t('archie'), url: url('archie/blueprints') }
+] %}
+
+{% css %}
+    /* A row whose diff runs to twenty lines should still read as one row: without this
+       the handle floats to the vertical centre of its own change list. */
+    .archie-plan td { vertical-align: top; }
+    .archie-plan .archie-changes { margin-top: 6px; width: 100%; }
+    .archie-plan .archie-changes td { padding: 2px 8px 2px 0; }
+    .archie-plan .archie-status { width: 3rem; }
+{% endcss %}
+
+{% block content %}
+    {% if error %}
+        <div class="pane">
+            <p class="error"><strong>{{ "This blueprint could not be read."|t('archie') }}</strong></p>
+            <p class="code">{{ error }}</p>
+        </div>
+    {% elseif plan %}
+        {% set counts = plan.counts() %}
+
+        <div class="pane">
+            {% set origin = kind == 'recipe' ? "recipe"|t('archie') : (kind == 'paste' ? "pasted"|t('archie') : source) %}
+            <h2>
+                {{ blueprint.label() }}
+                {%- if origin and origin != blueprint.label() %}
+                    <span class="light">— {{ origin }}</span>
+                {% endif %}
+            </h2>
+            {% if blueprint.description %}<p class="light">{{ blueprint.description }}</p>{% endif %}
+
+            <p>
+                <strong>{{ counts.create }}</strong> {{ "to create"|t('archie') }},
+                <strong>{{ counts.update }}</strong> {{ "to update"|t('archie') }},
+                <strong>{{ counts.skip }}</strong> {{ "unchanged"|t('archie') }}
+                {%- if counts.delete %}, <strong>{{ counts.delete }}</strong> {{ "to delete"|t('archie') }}{% endif %}
+                {%- if counts.conflict %}, <strong class="error">{{ counts.conflict }}</strong> {{ "blocked"|t('archie') }}{% endif %}.
+            </p>
+        </div>
+
+        {% if plan.errors %}
+            <div class="pane">
+                <h2 class="error">{{ "Errors"|t('archie') }}</h2>
+                <ul class="bullets">
+                    {% for message in plan.errors %}<li>{{ message }}</li>{% endfor %}
+                </ul>
+                <p class="light">{{ "Nothing can be applied until these are fixed."|t('archie') }}</p>
+            </div>
+        {% endif %}
+
+        {% if plan.warnings %}
+            <div class="pane">
+                <h2>{{ "Worth knowing"|t('archie') }}</h2>
+                <ul class="bullets">
+                    {% for message in plan.warnings %}<li class="light">{{ message }}</li>{% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        {% for type, items in plan.byType() %}
+            <div class="pane">
+                <h2>{{ items[0].typeLabel }}</h2>
+                <table class="data fullwidth archie-plan">
+                    <thead>
+                        <tr>
+                            <th class="archie-status"></th>
+                            <th>{{ "Handle"|t('archie') }}</th>
+                            <th>{{ "What happens"|t('archie') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                            <tr>
+                                <td>
+                                    {%- if item.action == 'create' %}<span class="status green" title="{{ 'Create'|t('archie') }}"></span>
+                                    {%- elseif item.action == 'update' %}<span class="status orange" title="{{ 'Update'|t('archie') }}"></span>
+                                    {%- elseif item.action == 'delete' %}<span class="status red" title="{{ 'Delete'|t('archie') }}"></span>
+                                    {%- elseif item.action == 'conflict' %}<span class="status red" title="{{ 'Blocked'|t('archie') }}"></span>
+                                    {%- else %}<span class="status" title="{{ 'Unchanged'|t('archie') }}"></span>{% endif %}
+                                </td>
+                                <td>
+                                    <code>{{ item.handle }}</code>
+                                    {% if item.name and item.name != item.handle %}<span class="light"> {{ item.name }}</span>{% endif %}
+                                </td>
+                                <td>
+                                    <span class="{{ item.action == 'conflict' ? 'error' : (item.action == 'skip' ? 'light' : '') }}">{{ item.summary() }}</span>
+
+                                    {% if item.ignored %}
+                                        <div class="light" style="margin-top: 4px;">
+                                            {{ "Ignored, because this component has no such setting:"|t('archie') }}
+                                            <code>{{ item.ignored|join(', ') }}</code>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if item.changes %}
+                                        <table class="archie-changes">
+                                            {% for change in item.renderedChanges() %}
+                                                <tr>
+                                                    <td style="width: 38%;"><code>{{ change.path }}</code></td>
+                                                    <td class="light">{{ change.from }}</td>
+                                                    <td>→ {{ change.to }}</td>
+                                                    <td class="light">{{ change.note }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </table>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endfor %}
+
+        <div class="pane">
+            {% if not canApply %}
+                <p class="light">
+                    {{ "This environment has admin changes disabled, so nothing can be applied here. Apply the blueprint where they are allowed, and deploy the project config it produces."|t('archie') }}
+                </p>
+            {% elseif not plan.hasWork() %}
+                <p class="light">{{ "Nothing to do — the site already matches this blueprint."|t('archie') }}</p>
+            {% else %}
+                <form method="post" accept-charset="UTF-8">
+                    {{ csrfInput() }}
+                    {{ actionInput('archie/plan/apply') }}
+                    {{ hiddenInput('kind', kind) }}
+                    {{ hiddenInput('source', source) }}
+                    {{ hiddenInput('contents', contents) }}
+                    {{ hiddenInput('vars', vars) }}
+                    {{ hiddenInput('force', force ? '1' : '') }}
+                    {{ hiddenInput('prune', prune ? '1' : '') }}
+
+                    <button type="submit" class="btn submit" {{ plan.isApplicable() ? '' : 'disabled' }}>
+                        {{ "Apply"|t('archie') }}
+                    </button>
+                    <span class="light" style="margin-left: 8px;">
+                        {{ "The plan is rebuilt before anything is written."|t('archie') }}
+                    </span>
+                </form>
+            {% endif %}
+
+            {% if plan.conflicts() %}
+                <hr>
+                <p class="error">
+                    {{ "Some changes would destroy content and are blocked."|t('archie') }}
+                </p>
+                <form method="get" action="{{ url('archie/blueprints/plan') }}">
+                    <input type="hidden" name="kind" value="{{ kind }}">
+                    <input type="hidden" name="source" value="{{ source }}">
+                    <input type="hidden" name="contents" value="{{ contents }}">
+                    <input type="hidden" name="vars" value="{{ vars }}">
+                    <input type="hidden" name="prune" value="{{ prune ? '1' : '' }}">
+                    <input type="hidden" name="force" value="1">
+                    <button type="submit" class="btn">{{ "Re-plan, allowing destructive changes"|t('archie') }}</button>
+                </form>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}

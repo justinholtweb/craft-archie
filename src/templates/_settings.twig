@@ -1,0 +1,68 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.textField({
+    label: "Blueprint directory"|t('archie'),
+    instructions: "Where blueprints are read from and written to, relative to the project root. Blueprints belong in version control beside the project config they produce."|t('archie'),
+    id: 'blueprintPath',
+    name: 'settings[blueprintPath]',
+    value: settings.blueprintPath,
+    errors: settings.getErrors('blueprintPath'),
+    placeholder: 'config/archie'
+}) }}
+
+{% if directory is defined %}
+    <p class="light"><code>{{ directory }}</code></p>
+{% endif %}
+
+{{ forms.selectField({
+    label: "Default format"|t('archie'),
+    instructions: "What an export is written as unless you say otherwise."|t('archie'),
+    id: 'defaultFormat',
+    name: 'settings[defaultFormat]',
+    value: settings.defaultFormat,
+    options: [
+        { label: 'YAML', value: 'yaml' },
+        { label: 'JSON', value: 'json' }
+    ]
+}) }}
+
+{{ forms.textField({
+    label: "Snapshots to keep"|t('archie'),
+    instructions: "How many applies to keep a record of, so they can be rolled back. 0 keeps every one."|t('archie'),
+    id: 'keepSnapshots',
+    name: 'settings[keepSnapshots]',
+    value: settings.keepSnapshots,
+    errors: settings.getErrors('keepSnapshots'),
+    size: 5,
+    type: 'number'
+}) }}
+
+{{ forms.lightswitchField({
+    label: "Generate missing handles"|t('archie'),
+    instructions: "Let a blueprint give a component a name and no handle, and derive the handle from it."|t('archie'),
+    id: 'generateMissingHandles',
+    name: 'settings[generateMissingHandles]',
+    on: settings.generateMissingHandles
+}) }}
+
+{{ forms.lightswitchField({
+    label: "Allow pruning"|t('archie'),
+    instructions: "Let an apply delete live components of a type the blueprint declares but does not list. Off by default: a blueprint describes what should exist, not everything that may. Even on, pruning still has to be asked for on each run, and never touches sites."|t('archie'),
+    id: 'allowPrune',
+    name: 'settings[allowPrune]',
+    on: settings.allowPrune
+}) }}
+
+{{ forms.selectField({
+    label: "Log level"|t('archie'),
+    instructions: "Written to storage/logs/archie.log."|t('archie'),
+    id: 'logLevel',
+    name: 'settings[logLevel]',
+    value: settings.logLevel,
+    options: [
+        { label: 'Debug', value: 'debug' },
+        { label: 'Info', value: 'info' },
+        { label: 'Warning', value: 'warning' },
+        { label: 'Error', value: 'error' }
+    ]
+}) }}

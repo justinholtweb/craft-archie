@@ -1,0 +1,85 @@
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{% set title = "Blueprints"|t('archie') %}
+{% set selectedSubnavItem = 'blueprints' %}
+{% set actionButton %}
+    <a href="{{ url('archie/blueprints/new') }}" class="btn submit add icon">{{ "New blueprint"|t('archie') }}</a>
+{% endset %}
+
+{% block content %}
+    <div class="pane">
+        <h2>{{ "In this project"|t('archie') }}</h2>
+        <p class="light"><code>{{ directory }}</code></p>
+
+        {% if blueprints %}
+            <table class="data fullwidth">
+                <thead>
+                    <tr>
+                        <th>{{ "File"|t('archie') }}</th>
+                        <th>{{ "Modified"|t('archie') }}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for blueprint in blueprints %}
+                        <tr>
+                            <td><a href="{{ url('archie/blueprints/edit/' ~ blueprint.name) }}"><code>{{ blueprint.name }}</code></a></td>
+                            <td class="light">{{ blueprint.modified|date('Y-m-d H:i') }}</td>
+                            <td class="thin">
+                                <a class="btn small" href="{{ url('archie/blueprints/plan', { kind: 'file', source: blueprint.name }) }}">{{ "Plan"|t('archie') }}</a>
+                                <form method="post" accept-charset="UTF-8" style="display: inline;">
+                                    {{ csrfInput() }}
+                                    {{ actionInput('archie/blueprints/delete') }}
+                                    {{ hiddenInput('name', blueprint.name) }}
+                                    <button type="submit" class="btn small delete-btn"
+                                            data-confirm="{{ 'Delete {name}? This only removes the file; nothing already applied is undone.'|t('archie', { name: blueprint.name }) }}">
+                                        {{ "Delete"|t('archie') }}
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="light">
+                {{ "No blueprints yet. Write one, copy a recipe, or export what this site already has."|t('archie') }}
+            </p>
+        {% endif %}
+    </div>
+
+    <div class="pane">
+        <h2>{{ "Plan something now"|t('archie') }}</h2>
+        <p class="light">{{ "Paste a blueprint to see what it would do. Nothing is written until you apply it."|t('archie') }}</p>
+
+        <form method="get" action="{{ url('archie/blueprints/plan') }}">
+            <input type="hidden" name="kind" value="paste">
+            {{ forms.textareaField({
+                name: 'contents',
+                rows: 12,
+                class: 'code',
+                placeholder: 'archie: 1' ~ "\n" ~ 'fields:' ~ "\n" ~ '  - handle: summary' ~ "\n" ~ '    type: plainText'
+            }) }}
+            {{ forms.textareaField({
+                label: "Variables"|t('archie'),
+                instructions: "One per line, as name = value."|t('archie'),
+                name: 'vars',
+                rows: 3,
+                class: 'code'
+            }) }}
+            <button type="submit" class="btn submit">{{ "Plan"|t('archie') }}</button>
+        </form>
+    </div>
+
+    <div class="pane">
+        <h2>{{ "Upload"|t('archie') }}</h2>
+        <form method="post" accept-charset="UTF-8" enctype="multipart/form-data">
+            {{ csrfInput() }}
+            {{ actionInput('archie/blueprints/upload') }}
+            <input type="file" name="blueprint" accept=".yaml,.yml,.json">
+            <button type="submit" class="btn">{{ "Upload"|t('archie') }}</button>
+            <p class="light">{{ "An Architect blueprint works too — Archie reads the Craft 4 shapes and tells you what it changed."|t('archie') }}</p>
+        </form>
+    </div>
+{% endblock %}

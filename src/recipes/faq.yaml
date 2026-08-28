@@ -1,0 +1,57 @@
+archie: 1
+name: FAQ
+description: >-
+  Questions and answers as a structure, grouped by category. Deliberately small — this is
+  the recipe to copy when you want to see the shape of one.
+
+vars:
+  handle: faq
+  name: FAQ
+
+fields:
+  - handle: faqAnswer
+    name: Answer
+    type: plainText
+    searchable: true
+    settings:
+      multiline: true
+      initialRows: 6
+
+  - handle: faqTopic
+    name: Topic
+    type: categories
+    settings:
+      source: faqTopics
+      maxRelations: 1
+
+categoryGroups:
+  - handle: faqTopics
+    name: FAQ topics
+    maxLevels: 1
+    siteSettings:
+      '*':
+        uriFormat: '{{ handle }}/{slug}'
+        template: '{{ handle }}/_topic'
+
+entryTypes:
+  - handle: question
+    name: Question
+    icon: circle-question
+    color: amber
+    fieldLayout:
+      - name: Content
+        fields:
+          - handle: faqAnswer
+            required: true
+          - faqTopic
+
+sections:
+  - handle: '{{ handle }}'
+    name: '{{ name }}'
+    type: structure
+    maxLevels: 1
+    entryTypes: [question]
+    siteSettings:
+      '*':
+        uriFormat: '{{ handle }}/{slug}'
+        template: '{{ handle }}/_entry'

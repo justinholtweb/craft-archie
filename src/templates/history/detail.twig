@@ -1,0 +1,90 @@
+{% extends "_layouts/cp" %}
+
+{% set title = run.blueprintName %}
+{% set selectedSubnavItem = 'history' %}
+{% set crumbs = [
+    { label: "History"|t('archie'), url: url('archie/history') }
+] %}
+
+{% block content %}
+    <div class="pane">
+        <p class="light">
+            {{ "Applied"|t('archie') }} {{ run.dateCreated }}
+            {%- if run.source %} · <code>{{ run.source }}</code>{% endif %}
+        </p>
+
+        {% if summary.error is defined and summary.error %}
+            <p class="error">
+                <strong>{{ "This apply stopped part-way."|t('archie') }}</strong><br>
+                {{ summary.error }}
+            </p>
+        {% endif %}
+
+        {% if summary.warnings is defined and summary.warnings %}
+            <ul class="bullets">
+                {% for warning in summary.warnings %}<li class="light">{{ warning }}</li>{% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+    <div class="pane">
+        <h2>{{ "What it did"|t('archie') }}</h2>
+        <table class="data fullwidth">
+            <thead>
+                <tr>
+                    <th>{{ "Action"|t('archie') }}</th>
+                    <th>{{ "Type"|t('archie') }}</th>
+                    <th>{{ "Handle"|t('archie') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td>
+                            {%- if item.action == 'create' %}<span class="status green"></span>
+                            {%- elseif item.action == 'delete' %}<span class="status red"></span>
+                            {%- else %}<span class="status orange"></span>{% endif %}
+                            {{ item.action }}
+                        </td>
+                        <td class="light">{{ handlers[item.type] ?? item.type }}</td>
+                        <td><code>{{ item.handle }}</code></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pane">
+        <h2>{{ "Undo"|t('archie') }}</h2>
+
+        {% if run.rolledBack %}
+            <p class="light">{{ "This apply was rolled back on {date}."|t('archie', { date: run.dateRolledBack }) }}</p>
+        {% elseif rollbackSteps %}
+            <p>{{ "Rolling this back will:"|t('archie') }}</p>
+            <ul class="bullets">
+                {% for step in rollbackSteps %}
+                    <li class="{{ step.destructive ? 'error' : '' }}">{{ step.label }}</li>
+                {% endfor %}
+            </ul>
+
+            {% set destructive = rollbackSteps|filter(s => s.destructive)|length %}
+            {% if destructive %}
+                <p class="error">
+                    {{ "{count} of these delete something that holds content. Any entries, categories or assets inside them go too, and rolling back does not bring them back."|t('archie', { count: destructive }) }}
+                </p>
+            {% endif %}
+
+            <form method="post" accept-charset="UTF-8">
+                {{ csrfInput() }}
+                {{ actionInput('archie/history/rollback') }}
+                {{ hiddenInput('id', run.id) }}
+                <button type="submit" class="btn {{ destructive ? 'delete-btn' : 'submit' }}"
+                        data-confirm="{{ 'Roll back this apply?'|t('archie') }}">
+                    {{ "Roll back"|t('archie') }}
+                </button>
+            </form>
+        {% else %}
+            <p class="light">{{ "There is nothing to undo."|t('archie') }}</p>
+        {% endif %}
+    </div>
+{% endblock %}

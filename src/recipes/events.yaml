@@ -1,0 +1,77 @@
+archie: 1
+name: Events
+description: >-
+  Dated events with a location, a ticket link and a venue category. Includes the two
+  fields people always add a week later: a short listing summary and an “all day” switch.
+
+vars:
+  handle: events
+  name: Events
+
+fields:
+  - handle: eventStart
+    name: Starts
+    type: date
+    settings:
+      showTime: true
+
+  - handle: eventEnd
+    name: Ends
+    type: date
+    settings:
+      showTime: true
+
+  - handle: eventAllDay
+    name: All day
+    type: lightswitch
+
+  - handle: eventSummary
+    name: Summary
+    type: plainText
+    searchable: true
+    settings:
+      multiline: true
+      initialRows: 3
+      charLimit: 240
+
+  - handle: eventLocation
+    name: Location
+    type: plainText
+
+  - handle: eventTicketUrl
+    name: Tickets
+    type: link
+
+entryTypes:
+  - handle: event
+    name: Event
+    icon: calendar
+    color: rose
+    fieldLayout:
+      - name: Content
+        fields:
+          - handle: eventSummary
+            required: true
+      - name: When
+        fields:
+          - handle: eventStart
+            required: true
+            width: 50
+          - handle: eventEnd
+            width: 50
+          - eventAllDay
+      - name: Where
+        fields:
+          - eventLocation
+          - eventTicketUrl
+
+sections:
+  - handle: '{{ handle }}'
+    name: '{{ name }}'
+    type: channel
+    defaultPlacement: beginning
+    entryTypes: [event]
+    siteSettings:
+      '*':
+        uriFormat: '{{ handle }}/{slug}'
+        template: '{{ handle }}/_entry'

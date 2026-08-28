@@ -1,0 +1,31 @@
+{% extends "_layouts/cp" %}
+
+{% set title = "Recipes"|t('archie') %}
+{% set selectedSubnavItem = 'recipes' %}
+
+{% block content %}
+    <div class="pane">
+        <p class="light">
+            {{ "A recipe is an ordinary blueprint that ships with Archie. Copy one into your project, edit it until it describes what you actually want, and apply it from there — so the source of truth for your content model lives in your repository rather than inside a plugin."|t('archie') }}
+        </p>
+    </div>
+
+    {% for recipe in recipes %}
+        <div class="pane">
+            <h2><a href="{{ url('archie/recipes/' ~ recipe.handle) }}">{{ recipe.name }}</a></h2>
+            {% if recipe.description %}<p class="light">{{ recipe.description }}</p>{% endif %}
+
+            <p class="light">
+                {%- for type, count in recipe.summary %}{{ count }} {{ type }}{{ not loop.last ? ', ' }}{% endfor -%}
+            </p>
+
+            <a class="btn" href="{{ url('archie/blueprints/plan', { kind: 'recipe', source: recipe.handle }) }}">{{ "Plan"|t('archie') }}</a>
+            <form method="post" accept-charset="UTF-8" style="display: inline;">
+                {{ csrfInput() }}
+                {{ actionInput('archie/recipes/copy') }}
+                {{ hiddenInput('handle', recipe.handle) }}
+                <button type="submit" class="btn submit">{{ "Copy into my project"|t('archie') }}</button>
+            </form>
+        </div>
+    {% endfor %}
+{% endblock %}

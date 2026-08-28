@@ -1,0 +1,59 @@
+archie: 1
+name: Media volume
+description: >-
+  A local filesystem, an asset volume on top of it, an alt-text field layout, and the
+  three transforms most sites end up wanting.
+
+vars:
+  handle: media
+  name: Media
+  path: '@webroot/uploads/media'
+  url: '@web/uploads/media'
+
+fields:
+  - handle: assetCredit
+    name: Credit
+    type: plainText
+    instructions: Photographer or source, shown alongside the image.
+
+filesystems:
+  - handle: '{{ handle }}'
+    name: '{{ name }}'
+    type: local
+    hasUrls: true
+    url: '{{ url }}'
+    settings:
+      path: '{{ path }}'
+
+volumes:
+  - handle: '{{ handle }}'
+    name: '{{ name }}'
+    fs: '{{ handle }}'
+    altTranslationMethod: site
+    fieldLayout:
+      - name: Content
+        fields:
+          - native: alt
+          - assetCredit
+
+transforms:
+  - handle: thumb
+    name: Thumbnail
+    mode: crop
+    width: 400
+    height: 400
+    quality: 82
+
+  - handle: card
+    name: Card
+    mode: crop
+    width: 800
+    height: 500
+    quality: 82
+
+  - handle: hero
+    name: Hero
+    mode: crop
+    width: 2000
+    height: 900
+    quality: 78

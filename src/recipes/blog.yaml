@@ -1,0 +1,77 @@
+archie: 1
+name: Blog
+description: >-
+  A blog section with articles, a summary, a hero image and a publish-ready field layout.
+  Every handle is prefixed by a variable so it can sit alongside an existing model.
+
+vars:
+  handle: blog
+  name: Blog
+  uriPrefix: blog
+
+fields:
+  - handle: summary
+    name: Summary
+    type: plainText
+    instructions: One or two sentences, used in listings and as the fallback meta description.
+    searchable: true
+    settings:
+      multiline: true
+      initialRows: 3
+      charLimit: 300
+
+  - handle: articleBody
+    name: Body
+    type: plainText
+    instructions: The article itself.
+    searchable: true
+    settings:
+      multiline: true
+      initialRows: 12
+
+  - handle: featuredImage
+    name: Featured image
+    type: assets
+    settings:
+      sources: '*'
+      maxRelations: 1
+      viewMode: large
+      allowedKinds: [image]
+
+  - handle: relatedPosts
+    name: Related posts
+    type: entries
+    instructions: Up to three posts to show at the foot of this one.
+    settings:
+      sources: ['{{ handle }}']
+      maxRelations: 3
+
+entryTypes:
+  - handle: article
+    name: Article
+    icon: newspaper
+    color: blue
+    hasTitleField: true
+    fieldLayout:
+      - name: Content
+        fields:
+          - handle: summary
+            required: true
+          - articleBody
+      - name: Media
+        fields:
+          - featuredImage
+      - name: Related
+        fields:
+          - relatedPosts
+
+sections:
+  - handle: '{{ handle }}'
+    name: '{{ name }}'
+    type: channel
+    enableVersioning: true
+    entryTypes: [article]
+    siteSettings:
+      '*':
+        uriFormat: '{{ uriPrefix }}/{slug}'
+        template: '{{ uriPrefix }}/_entry'

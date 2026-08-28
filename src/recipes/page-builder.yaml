@@ -1,0 +1,120 @@
+archie: 1
+name: Page builder
+description: >-
+  A Matrix field with four block types — rich text, image, pull quote and call to action —
+  plus a Pages structure that uses it. The Craft 5 way: blocks are shared entry types, so
+  the same block can be reused by any other field.
+
+vars:
+  handle: pages
+  name: Pages
+
+fields:
+  - handle: blockText
+    name: Text
+    type: plainText
+    searchable: true
+    settings:
+      multiline: true
+      initialRows: 8
+
+  - handle: blockImage
+    name: Image
+    type: assets
+    settings:
+      sources: '*'
+      maxRelations: 1
+      allowedKinds: [image]
+
+  - handle: blockCaption
+    name: Caption
+    type: plainText
+
+  - handle: blockQuote
+    name: Quote
+    type: plainText
+    settings:
+      multiline: true
+      initialRows: 3
+
+  - handle: blockAttribution
+    name: Attribution
+    type: plainText
+
+  - handle: blockHeading
+    name: Heading
+    type: plainText
+
+  - handle: blockLink
+    name: Link
+    type: link
+
+  # Declared after the blocks it contains for readability only — Archie works out the
+  # order for itself, and saves this field a second time once the entry types exist.
+  - handle: pageBuilder
+    name: Page builder
+    type: matrix
+    settings:
+      viewMode: blocks
+      entryTypes: [textBlock, imageBlock, quoteBlock, ctaBlock]
+
+entryTypes:
+  - handle: textBlock
+    name: Text
+    icon: align-left
+    hasTitleField: false
+    fieldLayout:
+      - name: Content
+        fields: [blockText]
+
+  - handle: imageBlock
+    name: Image
+    icon: photo
+    hasTitleField: false
+    fieldLayout:
+      - name: Content
+        fields:
+          - handle: blockImage
+            required: true
+          - blockCaption
+
+  - handle: quoteBlock
+    name: Pull quote
+    icon: quote
+    hasTitleField: false
+    fieldLayout:
+      - name: Content
+        fields:
+          - handle: blockQuote
+            required: true
+          - blockAttribution
+
+  - handle: ctaBlock
+    name: Call to action
+    icon: hand-pointer
+    hasTitleField: false
+    fieldLayout:
+      - name: Content
+        fields:
+          - handle: blockHeading
+            required: true
+          - blockText
+          - blockLink
+
+  - handle: page
+    name: Page
+    icon: file
+    fieldLayout:
+      - name: Content
+        fields: [pageBuilder]
+
+sections:
+  - handle: '{{ handle }}'
+    name: '{{ name }}'
+    type: structure
+    maxLevels: 3
+    entryTypes: [page]
+    siteSettings:
+      '*':
+        uriFormat: '{parent.uri}/{slug}'
+        template: '_pages/entry'

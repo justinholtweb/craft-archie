@@ -1,0 +1,112 @@
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{% set title = "Export"|t('archie') %}
+{% set selectedSubnavItem = 'export' %}
+
+{% css %}
+    /* A mature site has hundreds of fields. One per line turns choosing a few of them
+       into a scrolling exercise. */
+    .archie-picker { columns: 3; column-gap: 24px; }
+    .archie-picker > div { break-inside: avoid; }
+    @media (max-width: 1100px) { .archie-picker { columns: 2; } }
+    @media (max-width: 700px) { .archie-picker { columns: 1; } }
+{% endcss %}
+
+{% js %}
+    // "Everything" is a claim about the whole group, so it takes the individual boxes
+    // out of play rather than sitting alongside them contradicting them.
+    document.querySelectorAll('[data-archie-all]').forEach(function(all) {
+        var group = all.closest('.pane').querySelector('.archie-picker');
+        var sync = function() {
+            group.querySelectorAll('input[type=checkbox]').forEach(function(box) {
+                box.disabled = all.checked;
+                if (all.checked) { box.checked = false; }
+            });
+            group.style.opacity = all.checked ? '0.45' : '1';
+        };
+        all.addEventListener('change', sync);
+        sync();
+    });
+{% endjs %}
+
+{% block content %}
+    <form method="post" accept-charset="UTF-8">
+        {{ csrfInput() }}
+        {{ actionInput('archie/export/export') }}
+
+        <div class="pane">
+            <p class="light">
+                {{ "Reads what this site already has and writes it out as a blueprint. Nothing here changes anything."|t('archie') }}
+            </p>
+
+            {{ forms.textField({
+                label: "Filename"|t('archie'),
+                name: 'filename',
+                value: 'blueprint',
+                placeholder: 'blueprint'
+            }) }}
+
+            {{ forms.textField({
+                label: "Name"|t('archie'),
+                instructions: "Written into the blueprint itself, so it introduces itself when someone opens it."|t('archie'),
+                name: 'blueprintName'
+            }) }}
+
+            {{ forms.selectField({
+                label: "Format"|t('archie'),
+                name: 'format',
+                value: defaultFormat,
+                options: [
+                    { label: 'YAML', value: 'yaml' },
+                    { label: 'JSON', value: 'json' }
+                ]
+            }) }}
+
+            {{ forms.lightswitchField({
+                label: "Include what the selection depends on"|t('archie'),
+                instructions: "A section on its own cannot be applied anywhere: it needs its entry types, and those need their fields. On by default for that reason."|t('archie'),
+                name: 'dependencies',
+                on: true
+            }) }}
+
+            {{ forms.selectField({
+                label: "Where to put it"|t('archie'),
+                name: 'destination',
+                value: 'save',
+                options: [
+                    { label: "Save into the project"|t('archie'), value: 'save' },
+                    { label: "Download"|t('archie'), value: 'download' }
+                ]
+            }) }}
+        </div>
+
+        {% for type, group in inventory %}
+            {% if group.components %}
+                <div class="pane">
+                    <h2>{{ group.label }}</h2>
+                    <label>
+                        <input type="checkbox" name="selection[{{ type }}][]" value="*" data-archie-all>
+                        <strong>{{ "Everything"|t('archie') }}</strong>
+                        <span class="light">({{ group.components|length }})</span>
+                    </label>
+                    <hr>
+                    <div class="archie-picker">
+                        {% for component in group.components %}
+                            <div>
+                                <label>
+                                    <input type="checkbox" name="selection[{{ type }}][]" value="{{ component.handle }}">
+                                    {{ component.name }} <code class="light">{{ component.handle }}</code>
+                                </label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        <div class="pane">
+            <button type="submit" class="btn submit">{{ "Export"|t('archie') }}</button>
+        </div>
+    </form>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "_layouts/cp" %}
+
+{% set title = "History"|t('archie') %}
+{% set selectedSubnavItem = 'history' %}
+
+{% block content %}
+    <div class="pane">
+        {% if runs %}
+            <table class="data fullwidth">
+                <thead>
+                    <tr>
+                        <th>{{ "When"|t('archie') }}</th>
+                        <th>{{ "Blueprint"|t('archie') }}</th>
+                        <th>{{ "Components"|t('archie') }}</th>
+                        <th>{{ "Status"|t('archie') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for run in runs %}
+                        {% set summary = run.summary ? run.summary|json_decode : {} %}
+                        <tr>
+                            <td><a href="{{ url('archie/history/' ~ run.id) }}">{{ run.dateCreated }}</a></td>
+                            <td>{{ run.blueprintName }}</td>
+                            <td>{{ run.itemCount }}</td>
+                            <td>
+                                {% if run.rolledBack %}
+                                    <span class="status"></span> {{ "Rolled back"|t('archie') }}
+                                {% elseif summary.error is defined and summary.error %}
+                                    <span class="status red"></span> {{ "Stopped part-way"|t('archie') }}
+                                {% else %}
+                                    <span class="status green"></span> {{ "Applied"|t('archie') }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="light">{{ "Nothing has been applied yet."|t('archie') }}</p>
+        {% endif %}
+    </div>
+{% endblock %}

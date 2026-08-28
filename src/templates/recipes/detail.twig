@@ -1,0 +1,25 @@
+{% extends "_layouts/cp" %}
+
+{% set title = recipe.name %}
+{% set selectedSubnavItem = 'recipes' %}
+{% set crumbs = [
+    { label: "Recipes"|t('archie'), url: url('archie/recipes') }
+] %}
+
+{% block content %}
+    <div class="pane">
+        {% if recipe.description %}<p class="light">{{ recipe.description }}</p>{% endif %}
+
+        <a class="btn" href="{{ url('archie/blueprints/plan', { kind: 'recipe', source: recipe.handle }) }}">{{ "Plan"|t('archie') }}</a>
+        <form method="post" accept-charset="UTF-8" style="display: inline;">
+            {{ csrfInput() }}
+            {{ actionInput('archie/recipes/copy') }}
+            {{ hiddenInput('handle', recipe.handle) }}
+            <button type="submit" class="btn submit">{{ "Copy into my project"|t('archie') }}</button>
+        </form>
+    </div>
+
+    <div class="pane">
+        <pre class="code" style="overflow-x: auto;">{{ contents }}</pre>
+    </div>
+{% endblock %}

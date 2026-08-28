@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+  <!-- A drafting set square: the tool you draw a plan with before anything is built. -->
+  <path d="M14 82 L60 12 L86 82 Z" />
+  <path d="M31 82 L60 39 L73 82 Z" opacity="0.45" />
+  <path d="M14 82 L86 82" />
+</svg>

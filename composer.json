@@ -1,0 +1,73 @@
+{
+    "name": "justinholtweb/craft-archie",
+    "description": "Author a Craft content model as a YAML or JSON blueprint — lint it, plan the diff, apply it, and roll it back. The Craft 5 replacement for Architect.",
+    "type": "craft-plugin",
+    "version": "5.0.0",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "archie",
+        "architect",
+        "blueprint",
+        "scaffolding",
+        "content model",
+        "project config",
+        "yaml",
+        "schema"
+    ],
+    "license": "proprietary",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "authors": [
+        {
+            "name": "Justin Holt",
+            "homepage": "https://justinholt.com"
+        }
+    ],
+    "support": {
+        "docs": "https://github.com/justinholtweb/craft-archie/blob/main/README.md",
+        "source": "https://github.com/justinholtweb/craft-archie",
+        "issues": "https://github.com/justinholtweb/craft-archie/issues"
+    },
+    "require": {
+        "php": "^8.2",
+        "ext-json": "*",
+        "craftcms/cms": "^5.3.0"
+    },
+    "require-dev": {
+        "craftcms/ecs": "dev-main",
+        "craftcms/phpstan": "dev-main",
+        "phpunit/phpunit": "^10.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "justinholtweb\\archie\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "justinholtweb\\archie\\tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "config": {
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true,
+            "craftcms/plugin-installer": true,
+            "craftcms/generator": true
+        }
+    },
+    "extra": {
+        "name": "Archie",
+        "handle": "archie",
+        "developer": "Justin Holt",
+        "developerUrl": "https://justinholt.com",
+        "documentationUrl": "https://github.com/justinholtweb/craft-archie/blob/main/README.md",
+        "changelogUrl": "https://raw.githubusercontent.com/justinholtweb/craft-archie/main/CHANGELOG.md",
+        "class": "justinholtweb\\archie\\Plugin"
+    }
+}
