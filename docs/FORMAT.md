@@ -1,4 +1,9 @@
-# Blueprint format
+---
+title: Blueprint format
+slug: blueprint-format
+order: 35
+summary: "Every key a blueprint can carry: components, variables, references, field layouts and Craft 4 documents."
+---
 
 A blueprint is a YAML or JSON document describing part of a Craft content model. Archie decides
 which by looking at the first character: a `{` or `[` means JSON, anything else is parsed as YAML.

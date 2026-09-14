@@ -227,15 +227,29 @@ class Refs
         return $out;
     }
 
-    private static function walk(array $settings, string $fieldClass, bool $toUid, array &$unresolved = [], ?string $bareKind = null): array
-    {
+    private static function walk(
+        array $settings,
+        string $fieldClass,
+        bool $toUid,
+        array &$unresolved = [],
+        ?string $bareKind = null,
+        bool $inSources = false,
+    ): array {
         $defaultKind = self::FIELD_SOURCE_KINDS[ltrim($fieldClass, '\\')] ?? null;
 
         foreach ($settings as $key => $value) {
             $keyKind = self::BARE_UID_KEYS[$key] ?? null;
+            $keyIsSources = $key === 'source' || $key === 'sources';
 
             if (is_array($value)) {
-                $settings[$key] = self::walk($value, $fieldClass, $toUid, $unresolved, $keyKind ?? $bareKind);
+                $settings[$key] = self::walk(
+                    $value,
+                    $fieldClass,
+                    $toUid,
+                    $unresolved,
+                    $keyKind ?? $bareKind,
+                    $keyIsSources || $inSources,
+                );
                 continue;
             }
 
@@ -244,13 +258,24 @@ class Refs
             }
 
             // A bare list like `entryTypes: [article, aside]` — no prefix to read.
-            $kind = $keyKind ?? ($key === 'source' || $key === 'sources' ? null : $bareKind);
+            $kind = $keyKind ?? ($keyIsSources ? null : $bareKind);
             if ($kind !== null && !str_contains($value, ':')) {
                 $settings[$key] = self::translate($value, $kind, $toUid, $unresolved) ?? $value;
                 continue;
             }
 
-            $settings[$key] = self::translateRef($value, $defaultKind, $toUid, $unresolved);
+            // A bare handle only stands in for the field's own source kind *inside*
+            // `sources`. Everywhere else it is an ordinary setting, and reading
+            // `viewMode: large` on an Assets field as a volume handle produces a warning
+            // about a volume nobody mentioned. A prefixed `volume:images` is still
+            // translated wherever it appears, which is what the other source-ish keys —
+            // `defaultUploadLocationSource` and friends — actually hold.
+            $settings[$key] = self::translateRef(
+                $value,
+                $keyIsSources || $inSources ? $defaultKind : null,
+                $toUid,
+                $unresolved,
+            );
         }
 
         return $settings;

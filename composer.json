@@ -2,7 +2,7 @@
     "name": "justinholtweb/craft-archie",
     "description": "Author a Craft content model as a YAML or JSON blueprint — lint it, plan the diff, apply it, and roll it back. The Craft 5 replacement for Architect.",
     "type": "craft-plugin",
-    "version": "5.0.0",
+    "version": "5.0.1",
     "keywords": [
         "craft",
         "cms",
@@ -27,7 +27,8 @@
         }
     ],
     "support": {
-        "docs": "https://github.com/justinholtweb/craft-archie/blob/main/README.md",
+        "email": "justin@justinholt.com",
+        "docs": "https://justinholt.com/plugins/craft-archie/docs",
         "source": "https://github.com/justinholtweb/craft-archie",
         "issues": "https://github.com/justinholtweb/craft-archie/issues"
     },
@@ -66,7 +67,7 @@
         "handle": "archie",
         "developer": "Justin Holt",
         "developerUrl": "https://justinholt.com",
-        "documentationUrl": "https://github.com/justinholtweb/craft-archie/blob/main/README.md",
+        "documentationUrl": "https://justinholt.com/plugins/craft-archie/docs",
         "changelogUrl": "https://raw.githubusercontent.com/justinholtweb/craft-archie/main/CHANGELOG.md",
         "class": "justinholtweb\\archie\\Plugin"
     }

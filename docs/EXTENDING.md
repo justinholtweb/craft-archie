@@ -1,4 +1,9 @@
-# Extending Archie
+---
+title: Extending Archie
+slug: extending
+order: 60
+summary: Teaching Archie about a component type of your own, with one class.
+---
 
 Archie is built out of **component handlers**. There is one per kind of thing a blueprint can
 declare, and it owns everything about that kind: how it is found, read, written, described, linted

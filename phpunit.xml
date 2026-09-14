@@ -9,4 +9,15 @@
             <directory>tests/unit</directory>
         </testsuite>
     </testsuites>
+    <!--
+        Only Archie's own deprecations are worth a report here. Autoloading a Craft class
+        to ask what it extends surfaces three implicit-nullable notices from Craft itself
+        under PHP 8.4, which are Craft's to fix and would otherwise mark every green run
+        as "OK, but there were issues".
+    -->
+    <source restrictDeprecations="true">
+        <include>
+            <directory>src</directory>
+        </include>
+    </source>
 </phpunit>

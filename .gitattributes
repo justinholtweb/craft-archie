@@ -4,3 +4,6 @@
 /.gitignore        export-ignore
 /phpunit.xml       export-ignore
 /tests             export-ignore
+/promos            export-ignore
+# Source artwork for src/icon.svg. Kept in git, not shipped to every install.
+/src/icon.jpg      export-ignore

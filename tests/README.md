@@ -6,10 +6,10 @@
 composer test
 ```
 
-41 tests covering the parts of Archie that are pure logic: the diff engine, the blueprint parser,
-the Craft 4 Matrix rewrite, type shorthand resolution and route URI compilation. They do not boot
-Craft, and they should not need to — keeping this logic testable without a database is what keeps
-it honest.
+49 tests covering the parts of Archie that are pure logic: the diff engine, the blueprint parser,
+the Craft 4 Matrix rewrite, type shorthand resolution, field-settings canonicalisation and route
+URI compilation. They do not boot Craft, and they should not need to — keeping this logic testable
+without a database is what keeps it honest.
 
 ## Checking against a real Craft
 

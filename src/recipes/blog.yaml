@@ -35,7 +35,7 @@ fields:
     settings:
       sources: '*'
       maxRelations: 1
-      viewMode: large
+      viewMode: thumbs
       allowedKinds: [image]
 
   - handle: relatedPosts

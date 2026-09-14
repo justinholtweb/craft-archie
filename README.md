@@ -57,6 +57,8 @@ as ordinary blueprints you copy into your project and edit.
 
 ---
 
+Full documentation: [justinholt.com/plugins/craft-archie](https://justinholt.com/plugins/craft-archie/docs)
+
 ## Requirements
 
 Craft CMS 5.3+ and PHP 8.2+. No runtime dependencies beyond Craft itself.
@@ -136,7 +138,8 @@ blueprint and a chunk of project config:
   configured. Anything it does not mention is left alone — which is why it can describe one section
   of a large site without claiming anything about the rest.
 
-Full format reference: **[docs/FORMAT.md](docs/FORMAT.md)**.
+Full format reference: **[docs/FORMAT.md](docs/FORMAT.md)**, or
+[online](https://justinholt.com/plugins/craft-archie/docs/blueprint-format).
 
 ---
 
@@ -239,5 +242,7 @@ See **[docs/EXTENDING.md](docs/EXTENDING.md)**.
 ---
 
 ## Support
+
+Documentation: <https://justinholt.com/plugins/craft-archie/docs>
 
 Issues and questions: <https://github.com/justinholtweb/craft-archie/issues>

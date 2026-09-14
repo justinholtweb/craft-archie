@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<!-- handmade: hand-tuned deck -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Archie — Plugin Store promos</title>
+<link rel="stylesheet" href="fonts.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --charcoal: #0A1315;
+    --charcoal-light: #122024;
+    --charcoal-lighter: #1A2C30;
+    --accent: #08818A;
+    --accent-light: #29A8B0;
+    --paper: #8FD8DE;
+    --off-white: #F0F2F5;
+  }
+
+  html { background: #000; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--off-white);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- slide shell ---------------------------------------------------- */
+  .slide {
+    position: relative;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse at 84% 14%, rgba(8, 129, 138, 0.26) 0%, transparent 42%),
+      radial-gradient(ellipse at 62% 2%,  rgba(41, 168, 176, 0.14) 0%, transparent 36%),
+      radial-gradient(ellipse at 14% 88%, rgba(143, 216, 222, 0.07) 0%, transparent 40%),
+      linear-gradient(135deg, #0A1315 0%, #0C1F22 32%, #0D2226 64%, #0A1315 100%);
+  }
+
+  /* The drafting grid the blueprint metaphor is actually about. Kept to a whisper —
+     at anything more it fights the copy, and at this weight it reads as the paper
+     rather than as a pattern. */
+  .slide .grid {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(143, 216, 222, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(143, 216, 222, 0.045) 1px, transparent 1px);
+    background-size: 80px 80px;
+    -webkit-mask-image: radial-gradient(ellipse at 70% 40%, #000 0%, transparent 72%);
+    mask-image: radial-gradient(ellipse at 70% 40%, #000 0%, transparent 72%);
+  }
+
+  /* Oversized watermark, echoing the app icon */
+  .slide::after {
+    content: '';
+    position: absolute;
+    top: -16%;
+    left: -13%;
+    width: 1180px;
+    height: 1180px;
+    background: url('assets/watermark.svg') no-repeat center / contain;
+    opacity: 0.032;
+    pointer-events: none;
+    /* Feathered, so the head's silhouette fades out instead of sitting behind the copy
+       as a grey mass with a hard edge down one side. */
+    -webkit-mask-image: radial-gradient(circle at 46% 46%, #000 14%, transparent 62%);
+    mask-image: radial-gradient(circle at 46% 46%, #000 14%, transparent 62%);
+  }
+
+  /* Hairline along the top edge */
+  .slide::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 6px;
+    z-index: 5;
+    background: linear-gradient(90deg, var(--accent), var(--accent-light), var(--paper), var(--accent));
+  }
+
+  .inner {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    padding: 118px 130px;
+    display: flex;
+    align-items: center;
+  }
+
+  /* ---- type ------------------------------------------------------------ */
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: rgba(240, 242, 245, 0.62);
+    margin-bottom: 34px;
+  }
+  .eyebrow .rule {
+    width: 58px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--accent-light);
+  }
+
+  h1, h2 {
+    font-family: 'Jersey 20', sans-serif;
+    font-weight: 400;
+    /* background-clip: text clips to the line box, so a line-height at or below 1
+       slices the descenders off the gradient headings. */
+    line-height: 1.02;
+    letter-spacing: 0.005em;
+    padding-bottom: 0.04em;
+  }
+
+  .gradient-text {
+    background: linear-gradient(100deg, #08818A 0%, #29A8B0 36%, #8FD8DE 66%, #08818A 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .lede {
+    font-size: 34px;
+    line-height: 1.5;
+    color: rgba(240, 242, 245, 0.72);
+  }
+  .lede code, .mono { font-family: ui-monospace, 'SF Mono', Menlo, monospace; }
+  .lede code {
+    font-size: 0.88em;
+    background: rgba(255, 255, 255, 0.07);
+    padding: 2px 10px;
+    border-radius: 6px;
+  }
+
+  /* ---- cover slide ----------------------------------------------------- */
+  .cover .inner { gap: 90px; }
+  .cover .copy { flex: 1 1 auto; min-width: 0; }
+  .cover h1 { font-size: 200px; margin-bottom: 22px; }
+  .cover .tagline {
+    font-family: 'Jersey 20', sans-serif;
+    font-size: 60px;
+    line-height: 1.06;
+    color: var(--off-white);
+    margin-bottom: 40px;
+    max-width: 15ch;
+  }
+  .cover .lede { max-width: 30ch; font-size: 30px; }
+
+  .cover .mark {
+    flex: 0 0 auto;
+    width: 460px;
+    height: 460px;
+    filter: drop-shadow(14px 14px 0 rgba(0, 0, 0, 0.35));
+  }
+  .cover .mark img { width: 100%; height: 100%; display: block; }
+
+  .badges { display: flex; gap: 16px; margin-top: 52px; }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 26px;
+    font-size: 22px;
+    font-weight: 500;
+    color: rgba(240, 242, 245, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 999px;
+  }
+  .badge .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent-light); }
+
+  /* ---- the document → model statement ---------------------------------- */
+  .statement .inner { flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+  .statement .eyebrow { justify-content: center; }
+  .swap { display: flex; flex-direction: column; align-items: center; gap: 22px; margin-top: 8px; }
+  .swap .caption {
+    font-size: 24px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(240, 242, 245, 0.42);
+  }
+  .swap .before {
+    font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+    font-size: 68px;
+    color: rgba(240, 242, 245, 0.42);
+    letter-spacing: 0.01em;
+  }
+  .swap .arrow {
+    width: 4px;
+    height: 62px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, rgba(41, 168, 176, 0.15), var(--accent-light));
+    position: relative;
+  }
+  .swap .arrow::after {
+    content: '';
+    position: absolute;
+    left: 50%; bottom: -4px;
+    width: 18px; height: 18px;
+    transform: translateX(-50%) rotate(45deg);
+    border-right: 4px solid var(--accent-light);
+    border-bottom: 4px solid var(--accent-light);
+    border-radius: 2px;
+  }
+  .swap .after {
+    font-family: 'Jersey 20', sans-serif;
+    font-size: 122px;
+    line-height: 1.06;
+    letter-spacing: 0.01em;
+  }
+  .statement .lede { margin-top: 42px; max-width: 34ch; font-size: 32px; }
+
+  /* ---- feature slides -------------------------------------------------- */
+  .feature .inner { align-items: center; }
+  .feature .copy { width: 760px; flex: 0 0 760px; }
+  .feature h2 { font-size: 100px; margin-bottom: 30px; }
+  .feature .lede { max-width: 22ch; }
+
+  .points { list-style: none; margin-top: 44px; display: flex; flex-direction: column; gap: 18px; }
+  .points li {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    font-size: 25px;
+    line-height: 1.4;
+    color: rgba(240, 242, 245, 0.6);
+  }
+  /* Every text run either side of an inline tag becomes its own flex item here, so a
+     line with a <code> in it has to be wrapped in a single <span>. */
+  .points li .tick {
+    flex: 0 0 auto;
+    margin-top: 9px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent-light);
+  }
+
+  /* Right-hand panel shared by the rollback, conversion and lint slides */
+  .panel {
+    position: absolute;
+    top: 50%;
+    left: 900px;
+    right: 130px;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    z-index: 2;
+  }
+  .panel .note {
+    font-size: 23px;
+    line-height: 1.5;
+    color: rgba(240, 242, 245, 0.45);
+    margin-top: 6px;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 26px 32px;
+    border-radius: 14px;
+    background: rgba(27, 40, 54, 0.62);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 27px;
+  }
+  .row .mono { font-size: 26px; }
+  .row .grow { flex: 1 1 auto; min-width: 0; }
+  .row .dim { color: rgba(240, 242, 245, 0.45); }
+  .row .to { color: var(--accent-light); flex: 0 0 auto; }
+  .row .flag {
+    flex: 0 0 auto;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--accent-light);
+  }
+  .row .flag.warn { background: #E0A83C; }
+  .row .flag.err { background: #E05B5B; }
+  .row .flag.gone { background: #E05B5B; }
+  .row.danger { background: rgba(60, 26, 30, 0.5); border-color: rgba(224, 91, 91, 0.22); }
+  .row.danger .grow { color: #F0B4B4; }
+
+  /* ---- terminal --------------------------------------------------------- */
+  .term {
+    position: absolute;
+    top: 50%;
+    left: 880px;
+    right: -110px;
+    transform: translateY(-50%);
+    z-index: 2;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .term .chrome {
+    height: 44px;
+    background: #1A2C30;
+    background-image:
+      radial-gradient(circle at 26px 22px, #ff5f57 6.5px, transparent 7px),
+      radial-gradient(circle at 52px 22px, #ffbd2e 6.5px, transparent 7px),
+      radial-gradient(circle at 78px 22px, #28ca42 6.5px, transparent 7px);
+  }
+  .term .body {
+    background: #08191C;
+    padding: 40px 44px;
+    font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+    font-size: 24px;
+    line-height: 1.85;
+    white-space: pre;
+  }
+  .term .prompt { color: var(--accent-light); }
+  .term .cmd { color: var(--off-white); }
+  .term .out { color: rgba(240, 242, 245, 0.45); }
+  .term .add { color: #4ADE80; }
+  .term .chg { color: #E0A83C; }
+  .term .same { color: rgba(240, 242, 245, 0.34); }
+  .term .head { color: var(--paper); }
+  .term .blank { display: block; height: 18px; }
+
+  /* ---- closing grid ------------------------------------------------------ */
+  .grid-slide .inner { align-items: center; }
+  .grid-slide .wide { width: 100%; }
+  .grid-slide h2 { font-size: 88px; margin-bottom: 48px; }
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .card {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 26px 28px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 26px;
+    line-height: 1.3;
+    color: var(--off-white);
+  }
+  .card svg { flex: 0 0 auto; margin-top: 5px; }
+
+  /* ---- footer lockup --------------------------------------------------- */
+  .footer {
+    position: absolute;
+    left: 130px;
+    bottom: 62px;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    font-size: 22px;
+    letter-spacing: 0.06em;
+    color: rgba(240, 242, 245, 0.4);
+  }
+  .footer img { width: 40px; height: 40px; border-radius: 9px; }
+  .footer b { color: rgba(240, 242, 245, 0.72); font-weight: 600; }
+
+  /* Only render the requested slide when screenshotting */
+  body.single .slide { display: none; }
+  body.single .slide.active { display: block; }
+
+  /* ---- control-panel screenshot cards -------------------------------
+     Self-contained: these cards must drop into any deck in the family, and the decks
+     do not share a class system. Only --accent and --off-white are relied on, both of
+     which every deck defines, and both have fallbacks. */
+  .slide.cpcard { display: block; }
+  .cpcard .cpc-inner {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    padding: 112px 120px;
+    display: flex;
+    align-items: center;
+    gap: 70px;
+  }
+  .cpcard .cpc-copy { width: 640px; flex: 0 0 640px; }
+
+  .cpcard .cpc-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 34px;
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent-light, #7aa2c8);
+  }
+  .cpcard .cpc-eyebrow i {
+    display: block;
+    width: 62px;
+    height: 3px;
+    background: var(--accent-light, #7aa2c8);
+    border-radius: 2px;
+  }
+
+  .cpcard .cpc-h2 {
+    font-family: 'Jersey 20', 'Inter', sans-serif;
+    font-size: 88px;
+    line-height: 1.0;
+    font-weight: 400;
+    letter-spacing: 0.005em;
+    margin: 0 0 28px;
+    color: var(--off-white, #f0f0f5);
+  }
+
+  .cpcard .cpc-lede {
+    font-size: 33px;
+    line-height: 1.42;
+    color: rgba(240, 242, 245, 0.66);
+    margin: 0;
+  }
+
+  .cpcard .cpc-points { list-style: none; margin: 40px 0 0; padding: 0; }
+  .cpcard .cpc-points li {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    font-size: 26px;
+    line-height: 1.5;
+    color: rgba(240, 242, 245, 0.72);
+    margin-bottom: 18px;
+  }
+  .cpcard .cpc-points li::before {
+    content: '';
+    flex: 0 0 auto;
+    width: 10px;
+    height: 10px;
+    margin-top: 14px;
+    border-radius: 50%;
+    background: var(--accent-light, #7aa2c8);
+  }
+
+  .cpcard .cpc-panel { flex: 1 1 auto; min-width: 0; }
+
+  .cpcard .cpc-frame {
+    border-radius: 14px;
+    overflow: hidden;
+    background: #E4EDF6;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: 0 40px 90px rgba(0, 0, 0, 0.55), 0 6px 18px rgba(0, 0, 0, 0.35);
+  }
+  .cpcard .cpc-chrome {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 13px 18px;
+    background: linear-gradient(180deg, #1A2C30 0%, #122024 100%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.35);
+  }
+  .cpcard .cpc-chrome b { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.16); }
+  .cpcard .cpc-chrome b:nth-child(1) { background: #ff5f57; }
+  .cpcard .cpc-chrome b:nth-child(2) { background: #febc2e; }
+  .cpcard .cpc-chrome b:nth-child(3) { background: #28c840; }
+  .cpcard .cpc-chrome em {
+    margin-left: 12px;
+    font-style: normal;
+    font-size: 19px;
+    letter-spacing: 0.02em;
+    color: rgba(240, 242, 245, 0.45);
+  }
+  .cpcard .cpc-frame img { display: block; width: 100%; height: auto; }
+
+  /* A tall capture is anchored to its top — the interesting rows are always first.
+     The fade makes the cut read as "there is more" rather than as a broken edge. */
+  .cpcard .cpc-frame.cpc-clip { max-height: 640px; position: relative; }
+  .cpcard .cpc-frame.cpc-clip img { object-fit: cover; object-position: top center; max-height: 600px; }
+  .cpcard .cpc-frame.cpc-clip::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 130px;
+    background: linear-gradient(180deg, rgba(228,237,246,0) 0%, rgba(228,237,246,0.92) 78%, #E4EDF6 100%);
+  }
+
+  .cpcard .cpc-caption {
+    display: block;
+    margin-top: 20px;
+    font-size: 22px;
+    line-height: 1.45;
+    color: rgba(240, 242, 245, 0.52);
+  }
+  .cpcard .cpc-caption b { color: rgba(240, 242, 245, 0.80); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<!-- 1 · cover ================================================================= -->
+<section class="slide cover" data-n="1">
+  <div class="grid"></div>
+  <div class="inner">
+    <div class="copy">
+      <div class="eyebrow"><span class="rule"></span> Craft CMS 5</div>
+      <h1 class="gradient-text">Archie</h1>
+      <p class="tagline">Author Your Content Model as a Document</p>
+      <p class="lede">Project config already syncs a content model between environments. It has never been able to <em>author</em> one. That is the gap Archie fills &mdash; the Craft 5 replacement for Architect.</p>
+      <div class="badges">
+        <span class="badge"><span class="dot"></span> Free</span>
+        <span class="badge">Craft 5 &middot; PHP 8.2+</span>
+      </div>
+    </div>
+    <div class="mark"><img src="assets/icon.svg" alt=""></div>
+  </div>
+</section>
+
+<!-- 2 · the pitch in one line ================================================= -->
+<section class="slide statement" data-n="2">
+  <div class="grid"></div>
+  <div class="inner">
+    <div class="copy">
+      <div class="eyebrow"><span class="rule"></span> Archie</div>
+      <div class="swap">
+        <span class="caption">One file in your repository</span>
+        <span class="before">config/archie/blog.yaml</span>
+        <span class="arrow"></span>
+        <span class="caption">Applied, in dependency order</span>
+        <span class="after gradient-text">1 section &middot; 5 fields &middot; 1 entry type</span>
+      </div>
+      <p class="lede">Sections, entry types, fields, volumes, category groups, transforms, user groups and routes &mdash; written in a document you can read, review and commit, then built on any install from that one file.</p>
+    </div>
+  </div>
+  <div class="footer"><img src="assets/icon.svg" alt=""> <b>Archie</b> &nbsp;&middot;&nbsp; justinholt.com/plugins/craft-archie</div>
+</section>
+
+<!-- 3 · the diff, first ======================================================= -->
+<section class="slide feature" data-n="3">
+  <div class="grid"></div>
+  <div class="inner">
+    <div class="copy">
+      <div class="eyebrow"><span class="rule"></span> Archie</div>
+      <h2 class="gradient-text">It Shows You the Diff First</h2>
+      <p class="lede">What would be created, what already exists, and which attributes differ &mdash; before a single thing is written.</p>
+      <ul class="points">
+        <li><span class="tick"></span><span>Applying twice does nothing the second time</span></li>
+        <li><span class="tick"></span><span>Down to individual attributes and field&nbsp;layout elements</span></li>
+        <li><span class="tick"></span><span>Exits non-zero, so <code>plan</code> is a pull-request check</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="term">
+    <div class="chrome"></div>
+    <div class="body"><span class="prompt">$</span> <span class="cmd">php craft archie/blueprint/plan blog.yaml</span><span class="blank"></span><span class="head">Fields</span>
+  <span class="add">+  summary                Will be created</span>
+  <span class="chg">~  articleBody            1 change: settings.initialRows</span>
+  <span class="out">     settings.initialRows: 12 → 18</span>
+  <span class="same">   featuredImage          Already matches</span><span class="blank"></span><span class="head">Entry types</span>
+  <span class="chg">~  article                1 change: fieldLayout.summary</span>
+  <span class="out">     fieldLayout.summary: — → Content</span><span class="blank"></span><span class="out">Plan: 1 to create, 2 to update, 1 unchanged.</span></div>
+  </div>
+  <div class="footer"><img src="assets/icon.svg" alt=""> <b>Archie</b> &nbsp;&middot;&nbsp; justinholt.com/plugins/craft-archie</div>
+</section>
+
+<!-- 4 · undo ================================================================== -->
+<section class="slide feature" data-n="4">
+  <div class="grid"></div>
+  <div class="inner">
+    <div class="copy">
+      <div class="eyebrow"><span class="rule"></span> Archie</div>
+      <h2 class="gradient-text">It Can Be Undone</h2>
+      <p class="lede">Every apply records what each component looked like beforehand. Roll a run back and Archie deletes what it created and restores what it changed, newest first.</p>
+      <ul class="points">
+        <li><span class="tick"></span><span>From the control panel or <code>archie/history/rollback</code></span></li>
+        <li><span class="tick"></span><span>Says plainly which deletions take content with them</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="row danger"><span class="flag gone"></span><span class="grow">Delete the section &ldquo;team&rdquo;</span></div>
+    <div class="row danger"><span class="flag gone"></span><span class="grow">Delete the entry type &ldquo;person&rdquo;</span></div>
+    <div class="row danger"><span class="flag gone"></span><span class="grow">Delete the field &ldquo;personPhoto&rdquo;</span></div>
+    <div class="row"><span class="flag"></span><span class="grow dim">Restore <span class="mono">summary.instructions</span></span><span class="to">&larr;</span></div>
+    <p class="note">3 of these delete something that holds content. Any entries, categories or assets inside them go too, and rolling back does not bring them back.</p>
+  </div>
+  <div class="footer"><img src="assets/icon.svg" alt=""> <b>Archie</b> &nbsp;&middot;&nbsp; justinholt.com/plugins/craft-archie</div>
+</section>
+
+<!-- 5 · Craft 4 blueprints ==================================================== -->
+<section class="slide feature" data-n="5">
+  <div class="grid"></div>
+  <div class="inner">
+    <div class="copy">
+      <div class="eyebrow"><span class="rule"></span> Archie</div>
+      <h2 class="gradient-text">It Reads Your Craft 4 Blueprints</h2>
+      <p class="lede">Point Archie at an Architect document and it reads it. <code>blueprint/convert</code> writes the result back out as idiomatic Archie YAML, so you can read it before you trust it.</p>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="row"><span class="grow dim mono">section-nested entry types</span><span class="to">&rarr;</span><span class="mono">hoisted</span></div>
+    <div class="row"><span class="grow dim mono">tab-map field layouts</span><span class="to">&rarr;</span><span class="mono">tabs</span></div>
+    <div class="row"><span class="grow dim mono">Matrix block types</span><span class="to">&rarr;</span><span class="mono">entry types</span></div>
+    <div class="row"><span class="grow dim mono">block-inner fields</span><span class="to">&rarr;</span><span class="mono">real fields</span></div>
+    <div class="row"><span class="flag warn"></span><span class="grow dim mono">field groups</span><span class="to">&rarr;</span><span class="mono">dropped, explained</span></div>
+  </div>
+  <div class="footer"><img src="assets/icon.svg" alt=""> <b>Archie</b> &nbsp;&middot;&nbsp; justinholt.com/plugins/craft-archie</div>
+</section>
+
+<!-- 6 · the linter ============================================================ -->
+<section class="slide feature" data-n="6">
+  <div class="grid"></div>
+  <div class="inner">
+    <div class="copy">
+      <div class="eyebrow"><span class="rule"></span> Archie</div>
+      <h2 class="gradient-text">It Checks the Blueprint Before It Runs</h2>
+      <p class="lede">Reported up front, as errors and warnings &mdash; rather than as a half-built content model.</p>
+      <ul class="points">
+        <li><span class="tick"></span><span>Same exit codes as <code>plan</code>, so it belongs in CI</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="row"><span class="flag err"></span><span class="grow">Unknown field type <span class="mono">“sparkline”</span></span></div>
+    <div class="row"><span class="flag err"></span><span class="grow"><span class="mono">“table”</span> is ambiguous &mdash; use the full class name</span></div>
+    <div class="row"><span class="flag err"></span><span class="grow">Layout names a field that does not exist</span></div>
+    <div class="row"><span class="flag warn"></span><span class="grow">Filesystem credentials written in plain text</span></div>
+    <div class="row"><span class="flag warn"></span><span class="grow"><span class="mono">allowAdminChanges</span> is off in this environment</span></div>
+  </div>
+  <div class="footer"><img src="assets/icon.svg" alt=""> <b>Archie</b> &nbsp;&middot;&nbsp; justinholt.com/plugins/craft-archie</div>
+</section>
+
+<!-- 7 · control-panel screenshot ============================================== -->
+<section class="slide cpcard" data-n="7">
+  <div class="grid"></div>
+  <div class="cpc-inner">
+    <div class="cpc-copy">
+      <div class="cpc-eyebrow"><i></i> In the control panel</div>
+      <h2 class="cpc-h2">The plan,<br>before the apply</h2>
+      <p class="cpc-lede">Every component the blueprint names, what would happen to it, and the old value beside the new one.</p>
+    </div>
+    <div class="cpc-panel">
+      <figure class="cpc-frame">
+        <div class="cpc-chrome"><b></b><b></b><b></b><em>Archie &middot; Plan</em></div>
+        <img src="shots/archie-plan.png" alt="">
+      </figure>
+      <span class="cpc-caption">Planning is always the step between choosing a blueprint and applying it. <b>There is no way to apply one without seeing the plan.</b></span>
+    </div>
+  </div>
+  <div class="footer"><img src="assets/icon.svg" alt=""> <b>Archie</b> &nbsp;&middot;&nbsp; justinholt.com/plugins/craft-archie</div>
+</section>
+
+<!-- 8 · control-panel screenshot ============================================== -->
+<section class="slide cpcard" data-n="8">
+  <div class="grid"></div>
+  <div class="cpc-inner">
+    <div class="cpc-copy">
+      <div class="cpc-eyebrow"><i></i> In the control panel</div>
+      <h2 class="cpc-h2">What it did,<br>and how to undo&nbsp;it</h2>
+      <p class="cpc-lede">Every run keeps the list of what it touched, and what rolling it back would cost.</p>
+    </div>
+    <div class="cpc-panel">
+      <figure class="cpc-frame">
+        <div class="cpc-chrome"><b></b><b></b><b></b><em>Archie &middot; History</em></div>
+        <img src="shots/archie-rollback.png" alt="">
+      </figure>
+      <span class="cpc-caption">The destructive steps are named individually, <b>before</b> the button that runs them.</span>
+    </div>
+  </div>
+  <div class="footer"><img src="assets/icon.svg" alt=""> <b>Archie</b> &nbsp;&middot;&nbsp; justinholt.com/plugins/craft-archie</div>
+</section>
+
+<!-- 9 · control-panel screenshot ============================================== -->
+<section class="slide cpcard" data-n="9">
+  <div class="grid"></div>
+  <div class="cpc-inner">
+    <div class="cpc-copy">
+      <div class="cpc-eyebrow"><i></i> In the control panel</div>
+      <h2 class="cpc-h2">Seven recipes<br>to start from</h2>
+      <p class="cpc-lede">Blog, page builder, team, FAQ, events, SEO fields and a media volume &mdash; ordinary blueprints, not templates locked inside a plugin.</p>
+    </div>
+    <div class="cpc-panel">
+      <figure class="cpc-frame cpc-clip">
+        <div class="cpc-chrome"><b></b><b></b><b></b><em>Archie &middot; Recipes</em></div>
+        <img src="shots/archie-recipes.png" alt="">
+      </figure>
+      <span class="cpc-caption">Copy one into <span style="font-family:ui-monospace,Menlo,monospace">config/archie/</span> and edit it, so <b>the source of truth lives in your repository.</b></span>
+    </div>
+  </div>
+  <div class="footer"><img src="assets/icon.svg" alt=""> <b>Archie</b> &nbsp;&middot;&nbsp; justinholt.com/plugins/craft-archie</div>
+</section>
+
+<!-- 10 · closing grid ========================================================= -->
+<section class="slide grid-slide" data-n="10">
+  <div class="grid"></div>
+  <div class="inner">
+    <div class="wide">
+      <div class="eyebrow"><span class="rule"></span> Archie</div>
+      <h2>What Architect Left Behind</h2>
+      <div class="cards">
+        <div class="card">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#29A8B0" stroke-width="3"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Shows the diff before it writes</span>
+        </div>
+        <div class="card">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#29A8B0" stroke-width="3"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Every apply can be rolled back</span>
+        </div>
+        <div class="card">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#29A8B0" stroke-width="3"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Reads Architect's Craft 4 documents</span>
+        </div>
+        <div class="card">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#29A8B0" stroke-width="3"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Lints before it runs, and in CI</span>
+        </div>
+        <div class="card">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#29A8B0" stroke-width="3"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Everything is a handle, never a UID</span>
+        </div>
+        <div class="card">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#29A8B0" stroke-width="3"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Exports the live model back out</span>
+        </div>
+        <div class="card">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#29A8B0" stroke-width="3"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>A blueprint is partial, never a claim about the rest</span>
+        </div>
+        <div class="card">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#29A8B0" stroke-width="3"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Never changes a field's type quietly</span>
+        </div>
+        <div class="card">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#29A8B0" stroke-width="3"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Open at every seam, for your own components</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><img src="assets/icon.svg" alt=""> <b>Archie</b> &nbsp;&middot;&nbsp; justinholt.com/plugins/craft-archie</div>
+</section>
+
+<script>
+  var n = new URLSearchParams(location.search).get('s');
+  if (n) {
+    document.body.classList.add('single');
+    var el = document.querySelector('.slide[data-n="' + n + '"]');
+    if (el) el.classList.add('active');
+  }
+</script>
+</body>
+</html>

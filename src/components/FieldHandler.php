@@ -4,6 +4,7 @@ namespace justinholtweb\archie\components;
 
 use Craft;
 use craft\base\FieldInterface;
+use craft\fields\BaseRelationField;
 use craft\fields\MissingField;
 use justinholtweb\archie\helpers\HandleHelper;
 use justinholtweb\archie\helpers\Refs;
@@ -92,6 +93,7 @@ class FieldHandler extends BaseComponentHandler
         $spec['type'] = $resolved ?? $type;
 
         if (is_array($spec['settings'] ?? null)) {
+            $spec['settings'] = self::canonicalizeRelationViewMode($spec['settings'], (string)$spec['type']);
             $spec['settings'] = Refs::canonicalize($spec['settings'], (string)$spec['type']);
         } else {
             // A field with no `settings` block is not asking for its settings to be
@@ -101,6 +103,40 @@ class FieldHandler extends BaseComponentHandler
         }
 
         return $spec;
+    }
+
+    /**
+     * Writes a relation field's `viewMode` the way Craft is going to store it.
+     *
+     * `BaseRelationField::__construct()` rewrites two view modes before anything is
+     * saved: Craft 4's `large` became `thumbs`, and `cards` plus `showCardsInGrid`
+     * became `cards-grid`. A blueprint saying either of the old things is not wrong —
+     * `large` is exactly what an Architect document carries — but left alone it plans as
+     * a change on every run, because Archie compares what was asked for against what
+     * Craft stored and those two never converge.
+     */
+    public static function canonicalizeRelationViewMode(array $settings, string $type): array
+    {
+        if ($type === '' || !is_subclass_of($type, BaseRelationField::class)) {
+            return $settings;
+        }
+
+        $viewMode = $settings['viewMode'] ?? null;
+
+        if ($viewMode === 'large') {
+            $settings['viewMode'] = BaseRelationField::VIEW_MODE_THUMBS;
+        } elseif ($viewMode === BaseRelationField::VIEW_MODE_CARDS && !empty($settings['showCardsInGrid'])) {
+            $settings['viewMode'] = BaseRelationField::VIEW_MODE_CARDS_GRID;
+        }
+
+        // `showCardsInGrid` is only ever derived from the view mode, and only the field
+        // types that have it get told about it — writing it onto an Assets field would
+        // trade one permanent diff for a permanent "this component has no such setting".
+        if (array_key_exists('showCardsInGrid', $settings)) {
+            $settings['showCardsInGrid'] = ($settings['viewMode'] ?? null) === BaseRelationField::VIEW_MODE_CARDS_GRID;
+        }
+
+        return $settings;
     }
 
     public function lint(array $spec, LintReport $report, Blueprint $blueprint): void
